@@ -5,20 +5,25 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="index.css">
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.12.0/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.12.0/mapbox-gl.js"></script>
     <title>Document</title>
 </head>
 <body>
-        <input type="email" class="ema" id ="email" placeholder="*****@****.***">
+    <div id="inises" class="inises">
+        <input type="email" class="ema" id ="email" placeholder="correo@gmail.com">
         <input type="password" class="pass" name="" id="pass" placeholder="*********">
         <button class = "log" id="log">Iniciar sesion</button>
         <button class = "crear" id="crear">Crear cuenta</button>
         <button id="salir" class="salir">Salir</button>
         <button id="google" class="google">Google</button>
         <button id="facebook" class="facebook">Facebook</button>
-        <button id="twitter" class="twitter">twitter</button>  
+        <button id="twitter" class="twitter">twitter</button>
+        <button id="mostrarmapa1" class="mostrarmapa2">Mostrar mapa</button>
+        <button id="quitarmapa1" class="quitarmapa2">Quitar mapa</button>
 
-
-        <div>
+    </div>
+        <div id="formulario" class="formulario">
             <label for="">Nombre</label>
             <input type="text" name="Nombre" id="nombre">
             <label for="">Apellido</label>
@@ -30,8 +35,14 @@
             <label for="">Correo</label>
             <input type="email" name="Correo" id="correo">
             <button id="guardar" class="guardar">Guardar</button>
+            <button id="leer" class="leer">Leer</button>
+            <button id="actualizar" class="actualizar">Actualizar</button>
+            <button id="borrar" class="borrar">Borrar</button>
         </div>
+        <div id="map" class="mapaa"></div>
         
         <script src="index.js" type="module" ></script>
 </body>
 </html>
+
+

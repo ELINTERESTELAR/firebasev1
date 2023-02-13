@@ -1,7 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-app.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, GoogleAuthProvider, FacebookAuthProvider, TwitterAuthProvider, signInWithPopup, signOut } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-auth.js";
 import { getFirestore } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-firestore.js";
-import { collection, addDoc } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-firestore.js"; 
+import { collection, addDoc,  getDocs } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-firestore.js"; 
 
 
 const firebaseConfig = {
@@ -33,6 +33,9 @@ const google = document.getElementById('google');
 const facebook = document.getElementById('facebook');
 const twitter = document.getElementById('twitter');
 const guardar = document.getElementById('guardar');
+const leer = document.getElementById('leer');
+const actualizar = document.getElementById('actualizar');
+const borrar = document.getElementById('borrar');
 
 
 const nombre = document.getElementById('nombre');
@@ -40,7 +43,10 @@ const apellido = document.getElementById('apellido');
 const edad = document.getElementById('edad');
 const numero = document.getElementById('numero');
 const correo = document.getElementById('correo');
+const formulario = document.getElementById('formulario');
 
+const mapa = document.getElementById('mostrarmapa1');
+const quitarmapa = document.getElementById('quitarmapa1')
 
 //boton de crear usuario
 crear.addEventListener('click', function () {
@@ -66,6 +72,16 @@ log.addEventListener('click', function(){
     .then((userCredential) => {
         // Signed in 
         const user = userCredential.user;
+        document.getElementById('formulario').style.display = "block"
+        document.getElementById('email').style.display = "none"
+        document.getElementById('pass').style.display = "none"
+        document.getElementById('log').style.display = "none"
+        document.getElementById('crear').style.display = "none"
+        document.getElementById('salir').style.display = "block"
+        document.getElementById('google').style.display = "none"
+        document.getElementById('facebook').style.display = "none"
+        document.getElementById('twitter').style.display = "none"
+
         alert ('si funciona')
         // ...
         })
@@ -94,6 +110,15 @@ salir.addEventListener('click', function(){
     signOut(auth).then(() => {
         // Sign-out successful.
         alert('Salir de sesion')
+        document.getElementById('formulario').style.display = 'none'
+        document.getElementById('email').style.display = "block"
+        document.getElementById('pass').style.display = "block"
+        document.getElementById('log').style.display = "block"
+        document.getElementById('crear').style.display = "block"
+        document.getElementById('salir').style.display = "none"
+        document.getElementById('google').style.display = "block"
+        document.getElementById('facebook').style.display = "block"
+        document.getElementById('twitter').style.display = "block"
       }).catch((error) => {
         // An error happened.
         alert('fallo al salir de sesion')
@@ -132,6 +157,7 @@ signInWithPopup(auth, provider2)
   .then((result) => {
     // The signed-in user info.
     const user = result.user;
+
 
     // This gives you a Facebook Access Token. You can use it to access the Facebook API.
     const credential = FacebookAuthProvider.credentialFromResult(result);
@@ -200,3 +226,111 @@ guardar.addEventListener('click', async() => {
     
 });
 
+leer.addEventListener('click', async() => {
+  const querySnapshot = await getDocs(collection(db, "users"));
+  querySnapshot.forEach((doc) => {
+    document.getElementById('fomulario').innerHTML = `${doc.data().nombre}`
+   });
+});
+
+
+mapa.addEventListener('click', function(){
+  document.getElementById('mostrarmapa1').style.display = "none"
+  document.getElementById('quitarmapa1').style.display = "block"
+  document.getElementById('map').style.display = "block"
+  mapboxgl.accessToken = 'pk.eyJ1IjoiZWxpdWQyMDA0IiwiYSI6ImNsZHdwc2Q0bDA5bW0zcW9sNTF5bDc1djgifQ.qmPZAQVbA4PXPXP0A3JxYg';
+  const map = new mapboxgl.Map({
+  container: 'map', // container ID
+  // Choose from Mapbox's core styles, or make your own style with Mapbox Studio
+  style: 'mapbox://styles/mapbox/streets-v12', // style URL
+  center: [-74.5, 40], // starting position [lng, lat]
+  zoom: 9 // starting zoom
+  });
+});
+
+quitarmapa.addEventListener('click', function(){
+  document.getElementById('mostrarmapa1').style.display = "block"
+  document.getElementById('quitarmapa1').style.display = "none"
+  document.getElementById('map').style.display = "none"
+});
+
+
+
+
+/*
+HTML.btnNuevo.addEventListener("click", async () => {
+  try {
+      await setDoc(doc(db, "users", HTML.inputNombre.value), {
+          name: HTML.inputNombre.value,
+          edad: HTML.inputEdad.value,
+      });
+      alert(`Documento ${HTML.inputNombre.value} creado!`);
+  } catch (error) {
+      alert(error);
+  }
+});
+
+HTML.btnActualiza.addEventListener("click", async () => {
+  HTML.tabla.innerHTML =
+      `<tr>
+      <td>Id</td>
+      <td>Nombre</td>
+      <td>Edad</td>
+      <td>Actions</td>
+  </tr>`;
+  
+
+  const querySnapshot = await getDocs(collection(db, "users"));
+  querySnapshot.forEach((doc) => {
+
+      console.log(doc.id, " => ", doc.data());
+      HTML.tabla.innerHTML +=
+          `<tr>
+          <td>${doc.id}</td>
+          <td>${doc.data().name}</td>
+          <td>${doc.data().edad}</td>
+      </tr>`;
+  });
+});
+
+HTML.btnBuscar.addEventListener("click", async () => {
+  const docRef = doc(db, "users", HTML.inputIdU.value);
+  const docSnap = await getDoc(docRef);
+
+  if (docSnap.exists()) {
+      HTML.inputNombreU.value = docSnap.data().name;
+      HTML.inputEdadU.value = docSnap.data().edad;
+      console.log("Document data:", docSnap.data());
+  } else {
+      // doc.data() will be undefined in this case
+      console.log("No such document!");
+  }
+});
+
+HTML.btnGuardar.addEventListener("click", async() => {
+  const elementRef = doc(db, "users", HTML.inputIdU.value);
+
+  await updateDoc(elementRef, {
+      name: HTML.inputNombreU.value,
+      edad: HTML.inputEdadU.value,
+  });
+});
+
+HTML.btnBuscarE.addEventListener("click", async()=>{
+  const docRef = doc(db, "users", HTML.inputIdE.value);
+  const docSnap = await getDoc(docRef);
+
+  if (docSnap.exists()) {
+      HTML.inputNombreE.value = docSnap.data().name;
+      HTML.inputEdadE.value = docSnap.data().edad;
+      console.log("Document data:", docSnap.data());
+  } else {
+      // doc.data() will be undefined in this case
+      console.log("No such document!");
+  }
+});
+
+HTML.btnEliminar.addEventListener("click", async()=>{
+  await deleteDoc(doc(db, "users", HTML.inputIdE.value));
+})
+*/
